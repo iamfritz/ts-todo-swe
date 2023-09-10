@@ -83,22 +83,72 @@ const getTask = async (req: Request, res: Response) => {
     res.status(500).json(result);
   }
 };
+//get task by log user
+const getLogUserTask = async (req: Request, res: Response) => {
+  
+  try {
+    const user = req.user;
+    const userId = user.userId;    
+    const data = await TaskService.getUserTask(userId);
+    if (data) {
+      result["status"] = "success";
+      result["data"] = data;
+      res.json(result);
+    } else {
+      result["status"] = "error";
+      result["message"] = `Record not found.`;
+
+      res.status(401).json(result);
+    }
+  } catch (error: any) {
+    result["status"] = "error";
+    result["message"] = error.message;
+
+    res.status(500).json(result);
+  }
+};
+//get task by user
+const getUserTask = async (req: Request, res: Response) => {
+  
+  try {
+    const userId = req.params.id;    
+    const data = await TaskService.getUserTask(userId);
+    if (data) {
+      result["status"] = "success";
+      result["data"] = data;
+      res.json(result);
+    } else {
+      result["status"] = "error";
+      result["message"] = `Record not found.`;
+
+      res.status(401).json(result);
+    }
+  } catch (error: any) {
+    result["status"] = "error";
+    result["message"] = error.message;
+
+    res.status(500).json(result);
+  }
+};
 
 //create a new task
-const createTask = async (req: Request, res: Response) => {
-  
-
+const createTask = async (req: Request, res: Response) => {    
   try {
+
     const { title, description, category, level, status } = req.body;
 
     const createdCategories = await CategoryService.findOrCreate(category);
     
+    const user = req.user;
+    const userId = user.userId;
+
     const data = {
       title: title,
       description: description,
       category: createdCategories,
       level: level,
       status: status,
+      userId: userId
     };
 
     const newTask = await TaskService.create(data);
@@ -111,7 +161,7 @@ const createTask = async (req: Request, res: Response) => {
       result["status"] = "error";
       result["message"] = `Unable to add a new record.`;
 
-      res.status(401).json(createdCategories);
+      res.status(401).json(result);
     }
   } catch (error: any) {
     result["status"] = "error";
@@ -186,6 +236,8 @@ const deleteTask = async (req: Request, res: Response) => {
 module.exports = {
   getAllTask,
   getTask,
+  getLogUserTask,
+  getUserTask,
   createTask,
   updateTask,
   deleteTask,

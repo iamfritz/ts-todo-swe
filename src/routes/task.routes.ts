@@ -6,6 +6,8 @@ const authenticator = require("../middleware/authJWT");
 const {
   getAllTask,
   getTask,
+  getUserTask,
+  getLogUserTask,
   createTask,
   updateTask,
   deleteTask,
@@ -14,12 +16,20 @@ const {
 router
   .route("/")
   .get(getAllTask)  
-  .post(createTask);
+  .post(authenticator, createTask);
+
+router
+  .route("/me")
+  .get(authenticator, getLogUserTask);
+
+router
+  .route("/user/:id")
+  .get(authenticator, getUserTask);  
 
 router
   .route("/:id")
   .get(getTask)
-  .delete( deleteTask)
-  .put(updateTask);
+  .delete(authenticator, deleteTask)
+  .put(authenticator, updateTask);
 
 export default router;

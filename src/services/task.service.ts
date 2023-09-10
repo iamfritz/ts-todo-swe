@@ -6,6 +6,17 @@ class TaskService extends BaseService {
     super(Task);
   }
 
+  async getUserTask(userId : string) {
+    try {
+      const models = await this.Model.find({ userId })
+                                      .populate('category', 'name')
+                                      .populate('userId', 'name');
+      return models;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // You can add model-specific methods here
 }
 

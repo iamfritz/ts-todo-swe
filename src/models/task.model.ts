@@ -6,6 +6,7 @@ export interface ITask extends Document {
   category: Array<String>;
   level: string; // low, medium, high
   status: string; // pending, progress, completed, closed
+  userId: string;
   createdAt: Date;
   updatedAt: Date;    
 }
@@ -24,6 +25,11 @@ const taskSchema: Schema = new Schema(
     category: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
     level: { type: String },
     status: { type: String },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     createdAt: { type: Date },
     updatedAt: { type: Date }
   }
